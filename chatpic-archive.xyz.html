@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Linux setup instructions</title>
+<style>*{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}.container{max-width:38rem;padding-left:1rem;padding-right:1rem;margin-left:auto;margin-right:auto}.content a{color:#49757a}.content{padding-top:2rem;padding-bottom:2rem;min-height:50%}.post{margin-bottom:2em}.sidebar a{color:#fff}.sidebar nav{margin-top:1rem}.sidebar{text-align:center;padding:2rem 1rem;color:#fff;background-color:#202020}.sidebar-about h1{color:#fff;margin-top:0;font-size:2.25rem;font-weight:400}.sidebar-nav{padding-left:0;list-style:none}@media (min-width:48em){.sidebar{position:fixed;top:0;left:0;bottom:0;width:18rem}.content{max-width:40rem;margin-left:20rem;margin-right:2rem;margin-bottom:-40px;min-height:100%}}a{color:#227bb9;text-decoration:none}a:focus{text-decoration:underline}a:hover{text-decoration:underline}body{color:#515151;background-color:#fff;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;text-size-adjust:100%}code{font-family:Menlo,Monaco,"Courier New",monospace;padding:.25em .5em;font-size:85%;color:#b3555e;background-color:#f9f9f9;border-radius:3px}h1{font-size:2rem;margin-bottom:.5rem;font-weight:700;line-height:1.25;color:#313131;text-rendering:optimizeLegibility}h2{margin-bottom:.5rem;font-weight:700;line-height:1.25;color:#313131;text-rendering:optimizeLegibility;margin-top:1rem;font-size:1.5rem}html{font-family:'Open Sans',Roboto,Helvetica,Arial,sans-serif;font-size:20px;line-height:1.5}body,html{height:100%;width:100%;margin:0;padding:0}p{margin-top:0;margin-bottom:1rem}pre code{padding:0;font-size:100%;color:inherit;background-color:transparent}pre{display:block;margin-top:0;margin-bottom:1rem;padding:1rem;font-size:.8rem;line-height:1.4;white-space:pre;white-space:pre-wrap;word-break:break-all;word-wrap:break-word;background-color:#f9f9f9;font-family:Menlo,Monaco,"Courier New",monospace}ul{margin-top:0;margin-bottom:1rem}</style>
+<link rel="shortcut icon" href="favicon.png">
+</head>
+<body>
+<aside class="sidebar">
+<div class="container">
+<div class="sidebar-about">
+<h1>Chatpic Archiver</h1>
+</div>
+<nav>
+<ul class="sidebar-nav">
+<li>
+<a href="#linux">Linux Setup</a>
+</li>
+<li>
+<a href="#mac">macOS Setup</a>
+</li>
+<li>
+<a href="#windows">Windows Setup</a>
+</li>
+<li>
+<a href="#script">The script</a>
+</li>
+</ul>
+</nav>
+</div>
+</aside>
+<main class="content container">
+<div class="post">
+<h1 class="title" id="linux">Linux setup instructions</h1>
+<div>
+<h2 id="instructions">Instructions</h2>
+<p>I assume you have basic knowledge about installing software with your package manager of choice and python virtual envs</p>
+<p>Now you need to create a new virtual env</p>
+<pre><code>python3 -m venv chatpic
+source ./venv/bin/activate
+</code></pre><p>You now can install the requirements to run the archiver</p>
+<pre><code>pip install requests python-socketio &quot;python-socketio[client]&quot;
+</code></pre><p>After you installed the dependencies, you can simply start <a href="#script">the archiver script</a> with</p>
+<pre><code>python3 main.py
+</code></pre>
+</div>
+</div>
+
+
+<div class="post">
+<h1 class="title" id="mac" >macOS Setup instructions</h1>
+<div>
+<h2 id="instructions">Instructions</h2>
+<p>I assume you have basic knowledge about installing software with <code>brew</code> and python virtual envs</p>
+<p>You will need python virtualenv available on your mac. This can be installed with</p>
+<pre><code>brew install pyenv pyenv-virtualenv
+</code></pre><p>Follow this <a href="https://github.com/pyenv/pyenv-virtualenv#installing-with-homebrew-for-macos-users">Installation instructions</a></p>
+<p>Now you need to create a new virtual env</p>
+<pre><code>pyenv virtualenv chatpic
+pyenv activate chatpic
+</code></pre><p>You now can install the requirements to run the archiver</p>
+<pre><code>pip install requests python-socketio &quot;python-socketio[client]&quot;
+</code></pre><p>After you installed the dependencies, you can simply start <a href="#script">the archiver script</a> with</p>
+<pre><code>python3 main.py
+</code></pre>
+</div>
+</div>
+
+<div class="post">
+<h1 class="title" id="windows">Windows setup instructions</h1>
+<div>
+<p>I do not have access to windows right now.
+Mail me installation instructions and i will publish them here.</p>
+<p>You may want to follow <a href="https://www.liquidweb.com/kb/how-to-install-python-on-windows/">this</a> instructions and try running <a href="#script">the archiver script</a> but I do not guarantee success</p>
+</div>
+</div>
+
+
+<div class="post">
+<h1 class="title" id="script">The script</h1>
+<div>
+<p>Save this script as main.py somewhere you can find it again.</p>
+<p>To join <em>every</em> NSFW room set <code>JOIN_EVERYTHING</code> to <code>True</code>
+This will then join every room and all sub rooms which are not password protected and will take a long time.</p>
+<p>Unlike the archive version, this will save every file not just pictures.</p>
+<pre><code>import socketio
+import requests
+import os
+import random
+import string
+
+JOIN_EVERYTHING = True
+SAVE_PATH = './downloads/'
+
+
+# Do not change anything below this line
+#
+#
+
+
+sio = socketio.Client()
+
+def get_random_string(length):
+    letters = string.ascii_lowercase
+    result_str = ''.join(random.choice(letters) for i in range(length))
+    return result_str
+
+@sio.event
+def connect():
+    print('connection established')
+    sio.call('get-ads')
+    sio.call('create-user',get_random_string(16))
+    channels = sio.call('get-channels')
+    if JOIN_EVERYTHING:
+        for channel in channels["channels"]:
+            if channel["name"] == "FOR ADULTS":
+                for room in channel["rooms"]:
+                    name = room["name"]
+                    sub_rooms = join_room(name)
+                    join_everything(sub_rooms)
+    else:
+        sub_rooms = join_room("15min")
+        join_everything(sub_rooms)
+
+@sio.event
+def media(data):
+    if data['type'] == 'gallery':
+        join_room(data['name'])
+    else:
+        download(data)
+
+
+@sio.event
+def connect_error(message):
+        print('Connection was rejected due to ' + message)
+
+@sio.event
+def disconnect():
+    print(f'disconnected from server: ')
+
+def join_everything(data):
+    for room in data['room']['childRooms']:
+        if not room['isProtected']:
+            join_room(room['name'])
+
+def join_room(name):
+    print(f'joining {name}')
+    return sio.call('join',{"roomName":name,"parentRoomName":None},timeout=120)
+
+def download(data):
+    filename = data["filename"]
+    print(f'downloading {data["filename"]}')
+    response = requests.get(f'https://chatpic.org/media/{data["filename"]}')
+    if not os.path.exists(SAVE_PATH):
+        os.makedirs(SAVE_PATH)
+
+    with open(f'{SAVE_PATH}{data["filename"]}', 'wb') as f:
+        f.write(response.content)
+
+sio.connect('https://chatpic.org/socket.io/')
+sio.wait()
+</code></pre>
+</div>
+</div>
+</main>
+</body>
+</html>
