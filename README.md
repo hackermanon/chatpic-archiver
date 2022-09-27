@@ -85,7 +85,7 @@ I do not have access to windows right now. Mail me installation instructions and
 
 You may want to follow [this](https://www.liquidweb.com/kb/how-to-install-python-on-windows/) instructions and try running [the archiver script](#script) but I do not guarantee success
 
-The script
+The script [raw](https://raw.githubusercontent.com/hackermanon/chatpic-archiver/main/main.py)
 ==========
 
 Save this script as main.py somewhere you can find it again.
